@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class scaleByKClass {
     public static void main (String[] args) {
         Scanner scanner = new Scanner(System.in);
-        ArrayList<Integer> list = new ArrayList<Integer>();
+        ArrayList<Integer> list = getArrayList();
 
         //  Get input as a string array and parse into the integer arrayList
         System.out.println("Input a series of numbers separated by spaces and ended with enter:");
@@ -25,6 +25,21 @@ public class scaleByKClass {
             System.out.print(i);
         }
         System.out.println();
+    }
+
+    //  Method for getting a new ArrayList via console input.
+    public static ArrayList getArrayList () {
+        Scanner scanner = new Scanner(System.in);
+        ArrayList<Integer> list = new ArrayList<Integer>();
+
+        //  Get input as a string array and parse into the integer arrayList
+        System.out.println("Input a series of numbers separated by spaces and ended with enter:");
+        String[] inputArr = scanner.nextLine().split(" ");
+        for (String s : inputArr) {
+            list.add(Integer.parseInt(s));
+        }
+
+        return list;
     }
 
     //  Method for returning an integer list with each number K repeated K times. Removes zeroes
