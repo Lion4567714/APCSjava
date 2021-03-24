@@ -1,0 +1,115 @@
+GS13-03 Self-Check Problems
+
+8:	B 2
+	A
+	A 1
+
+	D 2
+	C
+	C 1
+
+	A 2
+	A
+	A 1
+
+	A 2
+	C
+	C 1
+
+
+9:	flute
+	shoe 1
+	flute 2
+
+	flute
+	blue 1
+	flute 2
+
+	moo
+	moo 1
+	moo 2
+
+	moo
+	blue 1
+	moo 2
+
+
+10:	moo 2
+	blue 1
+	moo
+
+	moo 2
+	moo 1
+	moo
+
+	flute 2
+	shoe 1
+	flute
+
+	flute 2
+	blue 1
+	flute
+
+
+11:	squid
+	creature 1
+	tentacles
+
+	BIG!
+	spout
+	creature 2
+
+	ocean-dwelling
+	creature 1
+	creature 2
+	
+	ocean-dwelling
+	warm-blooded
+	creature 2
+
+
+12:	creature 2
+	ocean-dwelling
+	creature 1	
+
+	tentacles
+	squid
+	creature 1
+	
+	creature 2
+	ocean-dwelling
+	mammal 1
+
+	creature 2
+	BIG!
+	spout
+
+
+13:	Bay 1 Pond 2 
+	Ocean 2 
+	Lake 3 Pond 2 
+
+	Pond 1 
+	Pond 2 
+	Pond 3 
+	
+	Pond 1 
+	Pond 2 
+	Lake 3 Pond 2 
+
+	Bay 1 Pond 2 
+	Bay 2 
+	Lake 3 Bay 2 
+
+
+14:	1:	Pond 1 
+	2:	Bay 1 Pond 2 
+	3:	Pond 2 
+	4:	
+	5:
+
+
+16:	It should be good design to make square a subclass of rectangle because a square is a type of rectangle, but not all rectangles can be squares.
+
+
+

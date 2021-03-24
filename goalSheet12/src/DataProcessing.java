@@ -17,40 +17,24 @@ public class DataProcessing {
     public static void main (String[] args) throws IOException {
         // Initialize and populate an ArrayList of students from the .txt file
         ArrayList<Student> students = new ArrayList<Student>();
-        Scanner file = new Scanner(new File("C:\\Users\\Anders Gilliland\\Documents\\GitHub\\" +
-                "apcsJava\\goalSheet12\\src\\studentData.txt"));
+        Scanner file = new Scanner(new File("src\\studentData.txt"));
         file.useDelimiter("\t");
 
-        /*String s1 = file.next();
-        String s2 = file.next();
-        int i = file.nextInt();
-        float f = file.nextFloat();
-        //System.out.print(file.next() + file.next() + file.nextInt() + file.nextFloat());
-        char c = file.next().charAt(0);
-        System.out.print(c);
-        students.add(new Student(s1, s2, i, f, c));*/
-
-        /*String lastName;
-        String firstName;
-        int idNumber;
-        float gradePer;
-        char gradeLet;*/
-
         while (file.hasNextLine()) {
-            //System.out.println(file.nextLine());
-
             String lastName = file.next();
             String firstName = file.next();
             int idNumber = file.nextInt();
             float gradePer = file.nextFloat();
             char gradeLet = file.next().charAt(0);
 
-            students.add(new Student(lastName, firstName, idNumber, gradePer, gradeLet));
-            //file.next(), file.next(), file.nextInt(), file.nextFloat(),
-                    //file.next().charAt(0)
-            //"Bc", "Stryker", 1000001, 99.9f, 'F'
+            System.out.println(lastName + " " + firstName + " " + idNumber + " " + gradePer + " " +
+                    gradeLet);
 
+            Student s = new Student(lastName, firstName, idNumber, gradePer, gradeLet);
+            students.add(s);
         }
+
+        file.close();
 
         // Interact with the user to determine how the data should be sorted
         Scanner console = new Scanner(System.in);
