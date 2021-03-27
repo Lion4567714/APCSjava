@@ -102,14 +102,14 @@ GS13-03 Self-Check Problems
 	Lake 3 Bay 2 
 
 
-14:	1:	Pond 1 
+14:	1:	Bay 1 Pond 2
 	2:	Bay 1 Pond 2 
-	3:	Pond 2 
-	4:	
-	5:
+	3:	Ocean 2
+	4:	Ocean 2
+	5:  Lake 3 Ocean 2
 
 
-16:	It should be good design to make square a subclass of rectangle because a square is a type of rectangle, but not all rectangles can be squares.
+16:	It would be bad design because the methods square would inherit from rectangle would not be useful or would produce unexpected results.
 
 
 

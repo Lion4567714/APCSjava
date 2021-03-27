@@ -1,4 +1,5 @@
 import java.util.HashMap;
+import java.util.HashSet;
 
 /**
  * <b>Pick An Exercise GS13-05</b>
@@ -7,8 +8,8 @@ import java.util.HashMap;
  * returns true if no two keys map to the same value
  *
  * @author Anders Gilliland
- * @version 1.0
- * @since 2021-3-24
+ * @version 1.1
+ * @since 2021-3-27
  */
 public class PickAnExercise {
     public static void main (String[] args) {
@@ -30,14 +31,16 @@ public class PickAnExercise {
     }
 
     public static boolean isUnique (HashMap<String, String> map) {
-        HashMap<String, Integer> valueMap = new HashMap<String, Integer>();
+        //  Props to Mr. Magruder for showing me a HashSet is better than a HashMap here.
+        //  Because I only need to look for one variable here, a set is all I need.
+        HashSet<String> valueSet = new HashSet<String>();
 
         for (String s : map.values()) {
-            if (valueMap.get(s) != null) {
+            if (valueSet.contains(s)) {
                 return false;
             }
 
-            valueMap.put(s, 1);
+            valueSet.add(s);
         }
 
         return true;
