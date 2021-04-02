@@ -27,8 +27,8 @@ public class sumToClass {
      * @param i The current reciprocal
      * @return
      */
-    public static float sumTo (int n, int i) {
+    /*public static float sumTo (int n, int i) {
 
 
-    }
+    }*/
 }
