@@ -1,10 +1,5 @@
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.Scanner;
-import java.io.File;
-import java.io.FileWriter;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.io.*;
+import java.util.*;
 
 /**
  * <b>Levenshtein Distance GS14-01</b>
@@ -14,19 +9,30 @@ import java.util.HashSet;
  * list of words to visit neighbors.
  *
  * @author Anders Gilliland
- * @version 0.2
- * @since 2021-5-25
+ * @version 0.4
+ * @since 2021-5-27
  */
 public class levenshtein {
     public static void main (String[] args) throws FileNotFoundException, IOException {
         Scanner scanner = new Scanner(new File("src\\dictionarySortedLength.txt"));
         String[] dict = new String[370099];
+        LinkedHashMap<String, LinkedHashSet<String>> neighbors =
+                new LinkedHashMap<String, LinkedHashSet<String>>();
 
         for (int i = 0; i < dict.length; i++) {
             dict[i] = scanner.next();
         }
 
-        searchAllNeighbors(dict);
+        Scanner console = new Scanner(System.in);
+        System.out.println("Find neighbors from [1] the dictionary (slow)" +
+                " or [2] saved file (fast)?");
+        switch (console.nextInt()) {
+            case 1 -> neighbors = searchAllNeighbors(dict);
+            case 2 -> neighbors = readFile();
+        }
+
+        System.out.println("\n\nWhich two words would you like to find a path between?");
+        findPath(console.next(), console.next(), neighbors);
     }
 
     /**
@@ -34,10 +40,10 @@ public class levenshtein {
      * Searches the entire dictionary using the oneEdit function for every 1-edit neighbor. Outputs
      * progress to the console and results to a text file for review.
      * @param dict Used dictionary
-     * @return HashMap of dictionary words with attached HashSets of neighbors
+     * @return LinkedHashMap of dictionary words with attached LinkedHashSets of neighbors
      * @throws IOException
      */
-    public static HashMap<String, HashSet<String>> searchAllNeighbors (String[] dict)
+    public static LinkedHashMap<String, LinkedHashSet<String>> searchAllNeighbors (String[] dict)
             throws IOException{
         // Search through the dictionary to find the indices where the number of characters change
         // This is used in the oneEdit function to minimize its area of search
@@ -61,7 +67,8 @@ public class levenshtein {
         output.createNewFile();
         FileWriter writer = new FileWriter(output);
 
-        HashMap<String, HashSet<String>> allNeighbors = new HashMap<String, HashSet<String>>();
+        LinkedHashMap<String, LinkedHashSet<String>> allNeighbors =
+                new LinkedHashMap<String, LinkedHashSet<String>>();
         int i = 0;  // Word index to display progress to the console
         for (String s : dict) {
             i++;
@@ -76,9 +83,14 @@ public class levenshtein {
             }
 
             // Find neighbors and record results
-            HashSet<String> set = oneEdit(s, dict, lenIdx[min - 1], lenIdx[max - 1]);
-            writer.write(s + ": " + set + "\n");
+            LinkedHashSet<String> set = oneEdit(s, dict, lenIdx[min - 1], lenIdx[max - 1]);
+
+            writer.write(s + " " + set);
+            if (i != 370099) {
+                writer.write("\n");
+            }
             System.out.println(i + " / 370099");
+
             allNeighbors.put(s, set);
         }
 
@@ -89,14 +101,15 @@ public class levenshtein {
     /**
      * <i>One Edit Function</i>
      * Searches the dictionary for appropriate 1-edit neighbors
+     * ***** PROBLEM: doesn't find neighbors like "dog" and "doog" *****
      * @param s1 Word to find neighbors for
      * @param dict Dictionary to search through
      * @param min Lower bound of search
      * @param max Upper bound of search
-     * @return HashSet of neighbors
+     * @return LinkedHashSet of neighbors
      */
-    public static HashSet<String> oneEdit (String s1, String[] dict, int min, int max) {
-        HashSet<String> neighbors = new HashSet<String>();
+    public static LinkedHashSet<String> oneEdit (String s1, String[] dict, int min, int max) {
+        LinkedHashSet<String> neighbors = new LinkedHashSet<String>();
 
         for (int i = min; i < max; i++) {
             String s2 = dict[i];
@@ -136,5 +149,107 @@ public class levenshtein {
         }
 
         return neighbors;
+    }
+
+    /**
+     * <i>Read File Function</i>
+     * Reads the contents of the Levenshtein output file. Used instead of the Search All Neighbors
+     * Function to quicken the process of finding paths for demonstration purposes.
+     * @return Complete list of neighbors
+     * @throws FileNotFoundException
+     */
+    public static LinkedHashMap<String, LinkedHashSet<String>> readFile ()
+            throws FileNotFoundException{
+        Scanner scanner = new Scanner(new File("src\\levenshteinOutput.txt"));
+        scanner.useDelimiter(",");
+        LinkedHashMap<String, LinkedHashSet<String>> neighbors =
+                new LinkedHashMap<String, LinkedHashSet<String>>();
+
+        while (scanner.hasNextLine()) {
+            LinkedHashSet<String> value = new LinkedHashSet<String>();
+
+            String line = scanner.nextLine();
+            line = line.replaceAll("[:]|[,]|[\\[]|[]]", "");
+            String[] arr = line.split("\\s");
+
+            value.addAll(Arrays.asList(arr));
+
+            neighbors.put(arr[0], value);
+        }
+
+        return neighbors;
+    }
+
+    public static void findPath (String s1, String s2, LinkedHashMap<String,
+            LinkedHashSet<String>> n) {
+        if (!n.containsKey(s1) || !n.containsKey(s2)) {
+            System.out.println("Invalid Input Detected, please try again.");
+            return;
+        }
+
+        ArrayList<String> defaultPath = new ArrayList<String>();
+        defaultPath.add(s1);
+        ArrayList<ArrayList<String>> paths = recursivePathFinder(s1, s2, n, defaultPath, 1,
+                new ArrayList<>());
+
+        if (paths.isEmpty()) {
+            System.out.println("There are no valid paths between those two words.");
+            return;
+        }
+
+        ArrayList<String> shortPath = paths.get(0);
+        for (ArrayList<String> a : paths) {
+            if (a.size() > shortPath.size()) {
+                shortPath = a;
+            }
+        }
+
+        System.out.println(paths.size() + " path(s) found!");
+        System.out.println("Shortest path (" + shortPath.size() + " elements):");
+        System.out.println(shortPath.toString() + "\n");
+        for (ArrayList<String> a : paths) {
+            System.out.println(a.toString());
+        }
+    }
+
+    /**
+     * <i>Recursive Path Finder Function</i>
+     * Recursively runs through and documents every possible path s1 can have to s2.
+     * Welcome to the Pit of Infinite Confusion(tm)!
+     * @param s1 The string being looked at for neighbors (starts as an initial string)
+     * @param s2 The end-goal string
+     * @param n List of neighbors
+     * @param currentPath Path between one initial word and the current iteration
+     * @param depth Distance of neighbors
+     * @param paths List of all discovered paths
+     * @return An updated list of discovered paths
+     */
+    public static ArrayList<ArrayList<String>> recursivePathFinder (String s1, String s2
+            , LinkedHashMap<String, LinkedHashSet<String>> n, ArrayList<String> currentPath
+            , int depth, ArrayList<ArrayList<String>> paths) {
+        // Run through each neighbor the current neighbor has
+        for (String str : n.get(s1)) {
+            if (currentPath.contains(str)) {
+                continue;   // Prevents running in circles
+            }
+
+            // If a neighbor of the current string has already been checked, reset the depth
+            if (currentPath.size() == depth) {
+                currentPath.remove(depth - 1);
+            }
+            currentPath.add(str);
+
+            // If the current neighbor has the end-goal as a neighbor, add this path to the list
+            if (str.equals(s2)) {
+                paths.add(currentPath);
+                return paths;
+            }
+
+            // Search through the current string's neighbors for a path
+            recursivePathFinder(str, s2, n, currentPath, depth + 1, paths);
+        }
+
+        // All paths at this level have been discovered, return to the previous level of depth
+        return paths;
     }
 }
